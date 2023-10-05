@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"sportsync/models"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -39,14 +38,4 @@ func SendErrorRespond(c *fiber.Ctx, code int, errors interface{}) error {
 	}
 
 	return c.Status(code).JSON(res)
-}
-
-func MsgForTag(fe validator.FieldError) string {
-	switch fe.Tag() {
-	case "required":
-		return "This field is required"
-	case "email":
-		return "Invalid email"
-	}
-	return fe.Error() // default error
 }

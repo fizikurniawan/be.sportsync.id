@@ -14,8 +14,9 @@ import (
 func NewAuthRoute(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group fiber.Router) {
 	wr := repository.NewUserRepository(db, "users")
 	wc := &httpHandler.AuthHandler{
-		AuthUsecase: usecase.NewAuthUsecase(wr, timeout),
+		AuthUsecase: usecase.NewAuthUsecase(wr, timeout, env),
 	}
 
 	group.Post("register", wc.Register)
+	group.Post("login", wc.Login)
 }
