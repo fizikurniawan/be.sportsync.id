@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SendSuccessPaginationRespond(c *fiber.Ctx, code int, data interface{}, page models.Page, errors interface{}) error {
+func SendSuccessPaginationRespond(c *fiber.Ctx, code int, data interface{}, page models.Page) error {
 	status := http.StatusText(code)
 	res := models.SuccessPaginationResponse{
 		Status: status,

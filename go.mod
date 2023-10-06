@@ -3,7 +3,6 @@ module sportsync
 go 1.21.1
 
 require (
-	github.com/amitshekhariitbhu/go-backend-clean-architecture v0.0.0-20230424045125-d997f43fa2d2
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/fiber/v2 v2.49.2

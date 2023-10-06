@@ -30,13 +30,13 @@ func main() {
 		Prefork:     false,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
-			status := http.StatusText(code)
 
 			// Retrieve the custom status code if it's a *fiber.Error
 			var e *fiber.Error
 			if errors.As(err, &e) {
 				code = e.Code
 			}
+			status := http.StatusText(code)
 
 			// Send custom error page
 			if err != nil {
@@ -44,7 +44,7 @@ func main() {
 				return c.Status(code).JSON(fiber.Map{
 					"status":  status,
 					"code":    code,
-					"message": "Internal Service Error",
+					"message": err.Error(),
 				})
 			}
 			return nil

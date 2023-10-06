@@ -2,6 +2,7 @@ package routes
 
 import (
 	"sportsync/bootstrap"
+	"sportsync/delivery/http/middlewares"
 	"sportsync/mongo"
 	"time"
 
@@ -17,5 +18,10 @@ func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, app *fi
 		})
 	})
 
-	NewAuthRoute(env, timeout, db, app)
+	authMiddlerware := middlewares.NewAuthMiddleware(env)
+	authGroup := app.Group("/auth")
+	NewAuthRoute(env, timeout, db, authGroup)
+
+	teamGroup := app.Group("/team").Use(authMiddlerware)
+	NewTeamRoute(env, timeout, db, teamGroup)
 }
