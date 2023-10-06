@@ -75,3 +75,27 @@ func ExtractIDFromToken(requestToken string, secret string) (string, error) {
 
 	return claims["id"].(string), nil
 }
+
+func ExtractDataFromToken(requestToken string, secret string) (models.UserClaims, error) {
+	token, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(secret), nil
+	})
+	var user models.UserClaims
+
+	if err != nil {
+		return user, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok && !token.Valid {
+		return user, fmt.Errorf("invalid token")
+	}
+
+	user.ID = claims["id"].(string)
+	user.Name = claims["name"].(string)
+	return user, nil
+}

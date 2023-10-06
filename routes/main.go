@@ -24,4 +24,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, app *fi
 
 	teamGroup := app.Group("/team").Use(authMiddlerware)
 	NewTeamRoute(env, timeout, db, teamGroup)
+
+	authGroup = app.Group("/ws")
+	NewChatRoute(env, timeout, db, authGroup)
 }

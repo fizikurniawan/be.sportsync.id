@@ -9,6 +9,7 @@ import (
 	"sportsync/entities"
 	"sportsync/internal/tokenutil"
 	"sportsync/models"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -30,11 +31,10 @@ func NewAuthUsecase(userRepository domain.UserRepository, timeout time.Duration,
 
 func (au *authUsecase) Register(ctx context.Context, userReq models.RegisterBody) (err error) {
 	var user entities.User
-	user.Email = userReq.Email
-	user.Name = userReq.Name
 
 	user, err = au.userRepository.GetByEmail(ctx, userReq.Email)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "no documents in result") {
+		err = nil
 		return
 	}
 
@@ -50,6 +50,8 @@ func (au *authUsecase) Register(ctx context.Context, userReq models.RegisterBody
 	}
 
 	user.Password = string(hashedPassword)
+	user.Email = userReq.Email
+	user.Name = userReq.Name
 	err = au.userRepository.Create(ctx, &user)
 
 	return

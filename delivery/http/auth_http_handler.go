@@ -38,7 +38,7 @@ func (uh *AuthHandler) Register(c *fiber.Ctx) (err error) {
 	}
 
 	err = uh.AuthUsecase.Register(c.UserContext(), *user)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "no documents in result") {
 		if strings.Contains(err.Error(), "email") {
 			return internal.SendErrorRespond(c, 400, map[string]string{"email": err.Error()})
 		}

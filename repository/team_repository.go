@@ -39,6 +39,12 @@ func (tr *teamRepository) GetByNameAndSport(c context.Context, name string, spor
 	return
 }
 
+func (tr *teamRepository) GetByID(c context.Context, id string) (team entities.Team, err error) {
+	collection := tr.database.Collection(tr.collection)
+	err = collection.FindOne(c, bson.M{"_id": id}).Decode(&team)
+	return
+}
+
 func (tr *teamRepository) GetMyTeam(c context.Context, filter models.GetMyTeamBody, userId string) (teams []entities.Team, page models.Page, err error) {
 	var totalDataCount interface{}
 	collection := tr.database.Collection(tr.collection)
