@@ -33,9 +33,10 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ./app
+          source: "./app"
           target: "${{secrets.TARGET_DIR}}"
           overwrite: true
+          strip_components: 1
 
       - name: Run app
         uses: appleboy/ssh-action@master
