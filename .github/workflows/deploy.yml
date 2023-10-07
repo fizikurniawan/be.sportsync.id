@@ -6,45 +6,58 @@ on:
       - master
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Setup Go 1.21.x
-  #       uses: actions/setup-go@v4
-  #       with:
-  #         go-version: "1.21.x"
-
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Build Go application
-  #       run: |
-  #         go build -o app cmd/main.go
-
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    # needs: build
 
     steps:
-      - name: Debug Output
-        run: |
-          ls -al ./
-      - name: Copy files to VPS
-        uses: appleboy/scp-action@v0.1.3
+      - name: Setup Go 1.21.x
+        uses: actions/setup-go@v4
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./"
+          go-version: "1.21.x"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run a multi-line script
+        run: |
+          mkdir ../build
+          go build -o ../build/app cmd/main.go
+          cp -TR . ../build
+          tar -cvf deploy.tar ../build/
+
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          source: "deploy.tar"
           target: "${{secrets.TARGET_DIR}}"
 
-      - name: Run app
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{secrets.TARGET_DIR}}
-            nohup ./app &
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   # needs: build
+
+  #   steps:
+  #     - name: Debug Output
+  #       run: |
+  #         ls -al ./
+  #     - name: Copy files to VPS
+  #       uses: appleboy/scp-action@v0.1.3
+  #       with:
+  #         host: ${{ secrets.VPS_HOST }}
+  #         username: ${{ secrets.VPS_USERNAME }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         source: "./"
+  #         target: "${{secrets.TARGET_DIR}}"
+
+  #     - name: Run app
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.VPS_HOST }}
+  #         username: ${{ secrets.VPS_USERNAME }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           cd ${{secrets.TARGET_DIR}}
+  #           nohup ./app &
