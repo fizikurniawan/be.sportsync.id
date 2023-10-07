@@ -34,9 +34,9 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./"
-          target: "${{secrets.TARGET_DIR}}"
+          # target: "${{secrets.TARGET_DIR}}"
+          target: "/tmp/test/"
           overwrite: true
-          strip_components: 1
           debug: true
 
       - name: Run app
