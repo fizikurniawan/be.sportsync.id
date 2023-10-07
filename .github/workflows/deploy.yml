@@ -48,6 +48,6 @@ jobs:
           script: |
             cd ${{secrets.TARGET_DIR}}
             shopt -s extglob
-            rm !(.env)
+            rm -r !(.env)
             tar -xvf deploy.tar --strip-components=1
             nohup ./app &
