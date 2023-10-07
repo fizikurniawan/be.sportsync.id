@@ -1,0 +1,33 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Go application
+        run: |
+          go build -o app cmd/main.go
+
+  deeploy:
+    runs-on: ubuntu-latest
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }} 
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ./
+          target: ${{secrets.TARGET_DIR}}
+
+      - name: SSH into VPS and restart application
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} 'cd ${{secrets.TARGET_DIR}} && ./app'
