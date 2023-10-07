@@ -6,21 +6,21 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup Go 1.21.x
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.21.x"
+  #   steps:
+  #     - name: Setup Go 1.21.x
+  #       uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.21.x"
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Build Go application
-        run: |
-          go build -o app cmd/main.go
+  #     - name: Build Go application
+  #       run: |
+  #         go build -o app cmd/main.go
 
   deploy:
     runs-on: ubuntu-latest
