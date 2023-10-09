@@ -23,7 +23,7 @@ jobs:
           mkdir ../build
           go build -o ../build/app cmd/main.go
           cp -TR . ../build
-          tar -cvf deploy.tar ../build/
+          cp ../build/app app
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
@@ -31,7 +31,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deploy.tar"
+          source: "app"
           target: "${{secrets.TARGET_DIR}}"
           overwrite: true
           command_timeout: "1m"
@@ -49,8 +49,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{secrets.TARGET_DIR}}
-            shopt -s extglob
-            rm -r !(.env | deploy.tar)
-            tar -xvf deploy.tar --strip-components=1
-            fuser -k 4000/tcp
-            nohup ./app &
+            ./deploy_be.sh &
