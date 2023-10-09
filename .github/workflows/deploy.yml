@@ -23,7 +23,7 @@ jobs:
           mkdir ../build
           go build -o ../build/app cmd/main.go
           cp -TR . ../build
-          cp ../build/app app
+          cp ../build/app app_new
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
@@ -31,7 +31,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "app"
+          source: "app_new"
           target: "${{secrets.TARGET_DIR}}"
           overwrite: true
           command_timeout: "1m"
@@ -50,4 +50,5 @@ jobs:
           script: |
             cd ${{secrets.TARGET_DIR}}
             sudo systemctl stop be.sportsync.id.service
+            rm app && mv app_new app
             sudo systemctl start be.sportsync.id.service
