@@ -49,4 +49,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{secrets.TARGET_DIR}}
-            ./deploy_be.sh &
+            sudo systemctl stop be.sportsync.id.service
+            sudo systemctl start be.sportsync.id.service
