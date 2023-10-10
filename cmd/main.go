@@ -12,6 +12,7 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -53,6 +54,10 @@ func main() {
 
 	// middleware
 	fiberApp.Use(logger.New())
+	fiberApp.Use(cors.New(cors.Config{
+		AllowOrigins: env.AllowOrigins,
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	routes.Setup(env, timeout, db, fiberApp)
 

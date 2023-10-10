@@ -21,6 +21,7 @@ type Env struct {
 	DBPass                 string `mapstructure:"DB_PASS"`
 	DBUser                 string `mapstructure:"DB_USER"`
 	DBPort                 string `mapstructure:"DB_PORT"`
+	AllowOrigins           string `mapstructure:"ALLOW_ORIGINS"`
 }
 
 func NewEnv() *Env {
