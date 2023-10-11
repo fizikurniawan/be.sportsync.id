@@ -46,7 +46,10 @@ func (tu *teamUsecase) Create(ctx context.Context, team models.TeamBody, userId 
 		Logo:      team.Logo,
 		OwnedByID: userId,
 	}
-	tu.teamRepository.Create(ctx, &teamInsert)
+	err = tu.teamRepository.Create(ctx, &teamInsert)
+	if err != nil {
+		return err
+	}
 
 	return
 }

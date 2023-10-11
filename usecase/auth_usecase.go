@@ -34,7 +34,6 @@ func (au *authUsecase) Register(ctx context.Context, userReq models.RegisterBody
 
 	user, err = au.userRepository.GetByEmail(ctx, userReq.Email)
 	if err != nil && !strings.Contains(err.Error(), "no documents in result") {
-		err = nil
 		return
 	}
 
@@ -43,12 +42,7 @@ func (au *authUsecase) Register(ctx context.Context, userReq models.RegisterBody
 		return
 	}
 
-	var hashedPassword []byte
-	hashedPassword, err = bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return
-	}
-
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
 	user.Email = userReq.Email
 	user.Name = userReq.Name
@@ -74,15 +68,8 @@ func (au *authUsecase) Login(ctx context.Context, userReq models.LoginBody) (use
 		return
 	}
 
-	accessToken, err = au.CreateAccessToken(&u, au.env.AccessTokenSecret, au.env.AccessTokenExpiryHour)
-	if err != nil {
-		return
-	}
-
-	refreshToken, err = au.CreateRefreshToken(&u, au.env.RefreshTokenSecret, au.env.RefreshTokenExpiryHour)
-	if err != nil {
-		return
-	}
+	accessToken, _ = au.CreateAccessToken(&u, au.env.AccessTokenSecret, au.env.AccessTokenExpiryHour)
+	refreshToken, _ = au.CreateRefreshToken(&u, au.env.RefreshTokenSecret, au.env.RefreshTokenExpiryHour)
 
 	user.AccessToken = accessToken
 	user.RefreshToken = refreshToken
@@ -98,4 +85,29 @@ func (au *authUsecase) CreateAccessToken(user *entities.User, secret string, exp
 
 func (au *authUsecase) CreateRefreshToken(user *entities.User, secret string, expiry int) (refreshToken string, err error) {
 	return tokenutil.CreateRefreshToken(user, secret, expiry)
+}
+
+func (au *authUsecase) RefreshToken(ctx context.Context, refreshToken string) (res models.LoginResponse, err error) {
+	id, _ := tokenutil.ExtractIDFromToken(refreshToken, au.env.RefreshTokenSecret)
+
+	if id == "" {
+		err = errors.New("user not found")
+		return
+	}
+
+	user, err := au.userRepository.GetByID(ctx, id)
+	if user.Email == "" {
+		err = errors.New("user not found")
+		return
+	}
+
+	accessToken, _ := tokenutil.CreateAccessToken(&user, au.env.AccessTokenSecret, au.env.AccessTokenExpiryHour)
+	newRefreshToken, _ := tokenutil.CreateRefreshToken(&user, au.env.RefreshTokenSecret, au.env.RefreshTokenExpiryHour)
+
+	res.Email = user.Email
+	res.Name = user.Name
+	res.RefreshToken = newRefreshToken
+	res.AccessToken = accessToken
+
+	return
 }

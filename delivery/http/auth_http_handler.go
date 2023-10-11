@@ -77,3 +77,33 @@ func (uh *AuthHandler) Login(c *fiber.Ctx) (err error) {
 
 	return internal.SendSuccessRespond(c, 200, user)
 }
+
+func (uh *AuthHandler) RefreshToken(c *fiber.Ctx) (err error) {
+	var validate = validator.New()
+
+	body := new(models.RefreshTokenBody)
+	if err := c.BodyParser(body); err != nil {
+		return err
+	}
+
+	errs := validate.Struct(body)
+	if errs != nil {
+		errorMap := make(map[string][]string)
+		for _, err := range errs.(validator.ValidationErrors) {
+			fieldName := strings.ToLower(err.Field())
+			errorMap[fieldName] = append(errorMap[fieldName], internal.MsgForTag(err))
+		}
+
+		return internal.SendErrorRespond(c, 400, errorMap)
+
+	}
+
+	var res models.LoginResponse
+	res, err = uh.AuthUsecase.RefreshToken(c.UserContext(), body.RefreshToken)
+	if err != nil {
+		return internal.SendErrorRespond(c, 400, map[string][]string{"refresh_token": {err.Error()}})
+
+	}
+
+	return internal.SendSuccessRespond(c, 200, res)
+}

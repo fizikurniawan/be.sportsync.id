@@ -19,4 +19,5 @@ func NewAuthRoute(env *bootstrap.Env, timeout time.Duration, db mongo.Database, 
 
 	group.Post("register", wc.Register)
 	group.Post("login", wc.Login)
+	group.Post("refresh", wc.RefreshToken)
 }
