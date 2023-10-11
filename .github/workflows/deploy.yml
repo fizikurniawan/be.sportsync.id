@@ -9,12 +9,17 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Go 1.21.x
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21.x"
+
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v4
 
       - name: Run Unit Tests
         run: |
-          go install github.com/jstemmer/go-junit-report@latest
+          go get github.com/jstemmer/go-junit-report@latest
           go test -v ./... | go-junit-report -set-exit-code > report.xml
 
       - name: Test Summary
