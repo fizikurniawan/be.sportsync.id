@@ -3,6 +3,7 @@ package routes
 import (
 	"sportsync/bootstrap"
 	httpHandler "sportsync/delivery/http"
+	"sportsync/domain"
 	"sportsync/mongo"
 	"sportsync/repository"
 	"sportsync/usecase"
@@ -12,7 +13,7 @@ import (
 )
 
 func NewTeamRoute(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group fiber.Router) {
-	tr := repository.NewTeamRepository(db, "teams")
+	tr := repository.NewTeamRepository(db, domain.CollectionTeam)
 	th := &httpHandler.TeamHandler{
 		TeamUsecase: usecase.NewTeamUsecase(tr, timeout, env),
 	}

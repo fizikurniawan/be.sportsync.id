@@ -3,6 +3,7 @@ package routes
 import (
 	"sportsync/bootstrap"
 	httpHandler "sportsync/delivery/http"
+	"sportsync/domain"
 	"sportsync/mongo"
 	"sportsync/repository"
 	"sportsync/usecase"
@@ -12,7 +13,7 @@ import (
 )
 
 func NewAuthRoute(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group fiber.Router) {
-	wr := repository.NewUserRepository(db, "users")
+	wr := repository.NewUserRepository(db, domain.CollectionUser)
 	wc := &httpHandler.AuthHandler{
 		AuthUsecase: usecase.NewAuthUsecase(wr, timeout, env),
 	}

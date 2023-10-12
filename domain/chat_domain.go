@@ -5,6 +5,8 @@ import (
 	"sportsync/entities"
 )
 
+const CollectionChat = "chats"
+
 type ChatRepository interface {
 	GetRecentMessages(c context.Context, teamId string, userId string, senderId string) (chats []entities.Chat, err error)
 	Insert(c context.Context, chat entities.Chat) error

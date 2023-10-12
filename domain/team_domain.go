@@ -6,6 +6,8 @@ import (
 	"sportsync/models"
 )
 
+const CollectionTeam = "teams"
+
 type TeamRepository interface {
 	Create(c context.Context, team *entities.Team) error
 	GetByNameAndSport(c context.Context, name string, sportName string) (team entities.Team, err error)

@@ -45,9 +45,6 @@ func (ur *userRepository) Fetch(c context.Context) ([]entities.User, error) {
 	var users []entities.User
 
 	err = cursor.All(c, &users)
-	if users == nil {
-		return []entities.User{}, err
-	}
 
 	return users, err
 }
