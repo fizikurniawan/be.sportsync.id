@@ -45,9 +45,6 @@ func (cr *chatRepository) GetRecentMessages(c context.Context, teamId string, us
 	}
 
 	err = cursor.All(c, &chats)
-	if chats == nil {
-		return
-	}
 	return
 
 }
