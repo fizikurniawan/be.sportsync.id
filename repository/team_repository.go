@@ -78,9 +78,5 @@ func (tr *teamRepository) GetMyTeam(c context.Context, filter models.GetMyTeamBo
 	page.TotalPages = totalPages
 
 	err = cursor.All(c, &teams)
-	if teams == nil {
-		return
-	}
-
 	return
 }
