@@ -15,7 +15,7 @@ type competitionRepository struct {
 	leagueCollection string
 }
 
-func NewCompetitionRepository(database mongo.Database, cupCollection string, leagueCollection string) domain.CompetiotionRepository {
+func NewCompetitionRepository(database mongo.Database, cupCollection string, leagueCollection string) domain.CompetitionRepository {
 	return &competitionRepository{
 		database:         database,
 		cupCollection:    cupCollection,
@@ -45,8 +45,8 @@ func (cr *competitionRepository) GetCupByID(c context.Context, cupId string) (cu
 	return
 }
 
-func (cr *competitionRepository) GetLeagueByID(c context.Context, cupId string) (cup entities.Cup, err error) {
-	collection := cr.database.Collection(cr.cupCollection)
-	err = collection.FindOne(c, bson.M{"_id": cupId}).Decode(&cup)
+func (cr *competitionRepository) GetLeagueByID(c context.Context, leagueId string) (league entities.League, err error) {
+	collection := cr.database.Collection(cr.leagueCollection)
+	err = collection.FindOne(c, bson.M{"_id": leagueId}).Decode(&league)
 	return
 }

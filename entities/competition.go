@@ -3,13 +3,19 @@ package entities
 import "time"
 
 type Cup struct {
-	ID   string `bson:"_id,omitempty" json:"id"`
-	Name string `json:"name" bson:"name"`
+	Name           string    `json:"name"`
+	MaxParticipant int       `json:"max_participant"`
+	Format         string    `form:"format"`
+	StartDate      time.Time `json:"start_date"`
+	Season         string    `json:"season"`
 }
 
 type League struct {
-	ID   string `bson:"_id,omitempty" json:"id"`
-	Name string `json:"name" bson:"name"`
+	Name           string    `json:"name"`
+	MaxParticipant int       `json:"max_participant"`
+	Format         string    `form:"format"`
+	StartDate      time.Time `json:"start_date"`
+	Season         string    `json:"season"`
 }
 
 type Fixtures struct {

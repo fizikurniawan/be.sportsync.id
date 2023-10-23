@@ -27,4 +27,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, app *fi
 
 	authGroup = app.Group("/ws")
 	NewChatRoute(env, timeout, db, authGroup)
+
+	competitionGroup := app.Group("/competition")
+	NewCompetitionRoute(env, timeout, db, competitionGroup)
 }
